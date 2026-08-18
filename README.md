@@ -29,7 +29,7 @@ Open Command Prompt in the project folder and run:
 
 ```bash
 python -m http.server 8000
-
+```
 ### 2. Create a public HTTPS link
 
 Open another Command Prompt and run:
