@@ -1,0 +1,2125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+               maximum-scale=1.0, user-scalable=no">
+
+<title>MindMove</title>
+
+<!-- Professional Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f3f8f6;
+    color: #202a31;
+}
+
+button {
+    border: none;
+    cursor: pointer;
+}
+
+.login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    padding: 40px 30px;
+    border-radius: 25px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0,0,0,.08);
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: #159447;
+    margin-bottom: 15px;
+}
+
+.login-title {
+    font-size: 21px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.login-description {
+    color: #68747d;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.camera-note {
+    background: #e8f8ee;
+    color: #159447;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.primary {
+    width: 100%;
+    background: #159447;
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.app {
+    display: none;
+    min-height: 100vh;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 230px;
+    height: 100vh;
+    background: #14232a;
+    color: white;
+    padding: 25px 15px;
+    z-index: 100;
+}
+
+.sidebar-logo {
+    text-align: center;
+    color: #39c77a;
+    font-size: 23px;
+    font-weight: bold;
+    margin-bottom: 35px;
+}
+
+.nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px;
+    margin: 6px 0;
+    border-radius: 9px;
+    cursor: pointer;
+}
+
+.nav.active,
+.nav:hover {
+    background: #159447;
+}
+
+.nav i {
+    width: 18px;
+    height: 18px;
+}
+
+.main {
+    margin-left: 230px;
+    padding: 20px;
+}
+
+.topbar {
+    background: white;
+    padding: 15px 20px;
+    border-radius: 13px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.status {
+    color: #159447;
+    font-weight: bold;
+}
+
+.ai {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #e5f8ed;
+    color: #159447;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.section {
+    display: none;
+}
+
+.section.active {
+    display: block;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+.camera-card,
+.card,
+.metric {
+    background: white;
+    border-radius: 16px;
+}
+
+.camera-card {
+    padding: 20px;
+}
+
+.camera-card p {
+    color: #68747d;
+    margin-top: 6px;
+}
+
+.camera-container {
+    position: relative;
+    margin-top: 15px;
+    background: #111;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+#video {
+    width: 100%;
+    display: block;
+    transform: scaleX(-1);
+}
+
+#poseCanvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(-1);
+    pointer-events: none;
+}
+
+.camera-status {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    background: #159447;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.camera-status.error {
+    background: #dc5148;
+}
+
+.camera-status.warning {
+    background: #dd9b00;
+}
+
+.flip {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    padding: 9px 12px;
+    background: white;
+    border-radius: 8px;
+}
+
+.metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.metric {
+    padding: 18px;
+}
+
+.metric h3 {
+    color: #68747d;
+    font-size: 14px;
+}
+
+.value {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.good {
+    color: #159447;
+}
+
+.warning {
+    color: #d89500;
+}
+
+.danger {
+    color: #dc5148;
+}
+
+.progress {
+    height: 8px;
+    background: #e6ebe9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%;
+    background: #159447;
+    transition: .4s;
+}
+
+.alert {
+    margin-top: 20px;
+    padding: 18px;
+    border-radius: 14px;
+    background: #e8f8ef;
+    border-left: 5px solid #159447;
+}
+
+.warning-box {
+    background: #fff5df;
+    border-color: #dd9b00;
+}
+
+.danger-box {
+    background: #ffe8e6;
+    border-color: #dc5148;
+}
+
+.alert h2 {
+    margin-bottom: 7px;
+}
+
+.card {
+    padding: 25px;
+}
+
+.monitor-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.monitor-item {
+    padding: 20px;
+    background: #f6faf8;
+    border-radius: 12px;
+}
+
+.monitor-item i {
+    color: #159447;
+    margin-bottom: 10px;
+}
+
+.monitor-item h3 {
+    margin-bottom: 8px;
+}
+
+.monitor-item p {
+    color: #68747d;
+}
+
+.history-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.history-item {
+    background: #f6faf8;
+    padding: 18px;
+    border-radius: 12px;
+}
+
+.history-item span {
+    color: #68747d;
+    font-size: 13px;
+}
+
+.history-item h3 {
+    margin-top: 8px;
+}
+
+.improvements {
+    margin-top: 20px;
+    background: #fff8e8;
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.improvements h3 {
+    margin-bottom: 12px;
+}
+
+.improvements li {
+    margin: 9px 0 9px 20px;
+}
+
+.breathing-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.timer {
+    font-size: 42px;
+    font-weight: bold;
+    color: #159447;
+    margin: 20px;
+}
+
+.breath-circle {
+    width: 180px;
+    height: 180px;
+    margin: 20px auto 30px;
+    border-radius: 50%;
+    border: 12px solid #159447;
+    background: #e7f8ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 4s ease;
+}
+
+.breath-circle.expand {
+    transform: scale(1.25);
+}
+
+.breath-text {
+    text-align: center;
+    color: #159447;
+    font-weight: bold;
+}
+
+.breathing-controls {
+    max-width: 300px;
+    margin: auto;
+}
+
+.secondary {
+    width: 100%;
+    background: #e8f8ee;
+    color: #159447;
+    padding: 13px;
+    border-radius: 10px;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+@media(max-width:800px) {
+
+    .sidebar {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        width: 100%;
+        height: 65px;
+        padding: 5px;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+
+    .sidebar-logo {
+        display: none;
+    }
+
+    .nav {
+        font-size: 11px;
+        padding: 9px;
+        text-align: center;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .nav i {
+        width: 18px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 12px;
+        padding-bottom: 80px;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .monitor-grid,
+    .history-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #video {
+        min-height: 400px;
+        object-fit: cover;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN -->
+
+<div id="login" class="login">
+
+    <div class="login-box">
+
+        <div class="logo">
+            MindMove
+        </div>
+
+        <div class="login-title">
+            Real-Time Stress & Posture Detection
+        </div>
+
+        <div class="login-description">
+            Observe. Detect. Correct. Breathe. Repeat.
+        </div>
+
+        <div class="camera-note">
+            Smartphone camera will be used for monitoring.
+        </div>
+
+        <button id="startButton" class="primary">
+            Get Started
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- APP -->
+
+<div id="app" class="app">
+
+<div class="sidebar">
+
+    <div class="sidebar-logo">
+        MindMove
+    </div>
+
+    <div class="nav active"
+         onclick="showSection('dashboard',this)">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+    </div>
+
+    <div class="nav"
+         onclick="showSection('monitor',this)">
+        <i data-lucide="monitor"></i>
+        <span>Live Monitor</span>
+    </div>
+
+    <div class="nav"
+         onclick="showSection('history',this)">
+        <i data-lucide="bar-chart-3"></i>
+        <span>History</span>
+    </div>
+
+    <div class="nav"
+         onclick="showSection('breathing',this)">
+        <i data-lucide="wind"></i>
+        <span>Breathing</span>
+    </div>
+
+    <div class="nav"
+         onclick="showSection('settings',this)">
+        <i data-lucide="settings"></i>
+        <span>Settings</span>
+    </div>
+
+</div>
+
+
+<div class="main">
+
+<div class="topbar">
+
+    <div class="status">
+        ● Live Monitoring
+    </div>
+
+    <div class="ai">
+        <i data-lucide="shield-check"></i>
+        On-Device AI
+    </div>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div id="dashboard" class="section active">
+
+<div class="dashboard">
+
+<div class="camera-card">
+
+    <h2>Live Behaviour Monitoring</h2>
+
+    <p>
+        Keep your upper body visible to the camera.
+    </p>
+
+    <div class="camera-container">
+
+        <video id="video"
+               autoplay
+               muted
+               playsinline></video>
+
+        <canvas id="poseCanvas"></canvas>
+
+        <div id="cameraStatus"
+             class="camera-status">
+            Camera Starting
+        </div>
+
+        <button class="flip"
+                onclick="flipCamera()">
+            <i data-lucide="refresh-cw"></i>
+        </button>
+
+    </div>
+
+    <div id="aiStatus"
+         class="alert">
+
+        <h2>AI Initializing</h2>
+
+        <p>
+            Loading posture detection...
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="metrics">
+
+<div class="metric">
+
+    <h3>Posture Score</h3>
+
+    <div id="postureScore"
+         class="value">
+        --
+    </div>
+
+    <p id="postureText">
+        Waiting...
+    </p>
+
+    <br>
+
+    <div class="progress">
+        <div id="postureBar"
+             class="progress-bar">
+        </div>
+    </div>
+
+</div>
+
+
+<div class="metric">
+
+    <h3>Stress Level</h3>
+
+    <div id="stressLevel"
+         class="value warning">
+        --
+    </div>
+
+    <p>Behaviour estimate</p>
+
+</div>
+
+
+<div class="metric">
+
+    <h3>Movement</h3>
+
+    <div id="movementLevel"
+         class="value">
+        --
+    </div>
+
+    <p>Body movement</p>
+
+</div>
+
+
+<div class="metric">
+
+    <h3>Breathing</h3>
+
+    <div id="breathingRate"
+         class="value">
+        --
+    </div>
+
+    <p>Prototype estimate</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div id="mainAlert"
+     class="alert">
+
+    <h2 id="alertTitle">
+        Waiting for detection
+    </h2>
+
+    <p id="alertMessage">
+        Start the camera and sit naturally.
+    </p>
+
+</div>
+
+</div>
+
+
+<!-- LIVE MONITOR -->
+
+<div id="monitor"
+     class="section">
+
+    <div class="card">
+
+        <h2>Live Monitor</h2>
+
+        <p style="color:#68747d;margin-top:8px;">
+            Detailed real-time behaviour analysis
+        </p>
+
+        <div class="monitor-grid">
+
+            <div class="monitor-item">
+                <i data-lucide="user-check"></i>
+                <h3>Posture</h3>
+                <p id="monitorPosture">
+                    Waiting for detection...
+                </p>
+            </div>
+
+            <div class="monitor-item">
+                <i data-lucide="move"></i>
+                <h3>Movement</h3>
+                <p id="monitorMovement">
+                    Waiting for detection...
+                </p>
+            </div>
+
+            <div class="monitor-item">
+                <i data-lucide="brain"></i>
+                <h3>Stress Indicator</h3>
+                <p id="monitorStress">
+                    Waiting for detection...
+                </p>
+            </div>
+
+            <div class="monitor-item">
+                <i data-lucide="bell"></i>
+                <h3>Current Alert</h3>
+                <p id="monitorAlert">
+                    No alert
+                </p>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- HISTORY -->
+
+<div id="history"
+     class="section">
+
+    <div class="card">
+
+        <h2>Session History</h2>
+
+        <p style="color:#68747d;margin-top:8px;">
+            Summary of your latest monitoring session
+        </p>
+
+        <div class="history-grid">
+
+            <div class="history-item">
+                <span>Latest Posture Score</span>
+                <h3 id="historyScore">--</h3>
+            </div>
+
+            <div class="history-item">
+                <span>Movement</span>
+                <h3 id="historyMovement">--</h3>
+            </div>
+
+            <div class="history-item">
+                <span>Stress Level</span>
+                <h3 id="historyStress">--</h3>
+            </div>
+
+            <div class="history-item">
+                <span>Session Status</span>
+                <h3>Active</h3>
+            </div>
+
+        </div>
+
+
+        <div class="improvements">
+
+            <h3>
+                Improvements Needed
+            </h3>
+
+            <ul id="improvementList">
+
+                <li>
+                    Maintain an upright sitting posture
+                </li>
+
+                <li>
+                    Relax your shoulders
+                </li>
+
+                <li>
+                    Take regular movement breaks
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- BREATHING -->
+
+<div id="breathing"
+     class="section">
+
+    <div class="card breathing-container">
+
+        <h2>Guided Breathing</h2>
+
+        <p style="color:#68747d;margin-top:8px;">
+            Follow the breathing pattern for one minute.
+        </p>
+
+
+        <div id="timer"
+             class="timer">
+            01:00
+        </div>
+
+
+        <div id="breathCircle"
+             class="breath-circle">
+
+            <div id="breathText"
+                 class="breath-text">
+                Ready
+            </div>
+
+        </div>
+
+
+        <div class="breathing-controls">
+
+            <button id="breathingStart"
+                    class="primary"
+                    onclick="startBreathing()">
+
+                Start 1-Minute Exercise
+
+            </button>
+
+            <button class="secondary"
+                    onclick="stopBreathing()">
+
+                Stop Exercise
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- SETTINGS -->
+
+<div id="settings"
+     class="section">
+
+    <div class="card">
+
+        <h2>Settings</h2>
+
+        <br>
+
+        <p>Camera: Smartphone camera</p>
+
+        <br>
+
+        <p>AI: MediaPipe Pose Landmarker</p>
+
+        <br>
+
+        <p>Processing: Browser-based</p>
+
+    </div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let video =
+    document.getElementById("video");
+
+let canvas =
+    document.getElementById("poseCanvas");
+
+let ctx =
+    canvas.getContext("2d");
+
+let stream = null;
+
+let poseLandmarker = null;
+
+let frontCamera = true;
+
+let previousShoulder = null;
+
+let poseLoading = false;
+
+let lastVideoTime = -1;
+
+
+/* =====================================================
+   ICONS
+===================================================== */
+
+lucide.createIcons();
+
+
+/* =====================================================
+   START APP
+===================================================== */
+
+document
+.getElementById("startButton")
+.addEventListener("click", async function() {
+
+    document
+    .getElementById("login")
+    .style.display = "none";
+
+    document
+    .getElementById("app")
+    .style.display = "block";
+
+    lucide.createIcons();
+
+    await startCamera();
+
+});
+
+
+/* =====================================================
+   CAMERA
+===================================================== */
+
+async function startCamera() {
+
+    const status =
+        document.getElementById("cameraStatus");
+
+    try {
+
+        status.innerText =
+            "Camera Starting...";
+
+        status.className =
+            "camera-status warning";
+
+        if (stream) {
+
+            stream.getTracks()
+                  .forEach(track => track.stop());
+
+        }
+
+        stream =
+            await navigator
+            .mediaDevices
+            .getUserMedia({
+
+                video: {
+
+                    facingMode:
+                        frontCamera
+                        ? "user"
+                        : "environment",
+
+                    width: {
+                        ideal: 640
+                    },
+
+                    height: {
+                        ideal: 480
+                    }
+
+                },
+
+                audio: false
+
+            });
+
+
+        video.srcObject = stream;
+
+        await video.play();
+
+
+        status.innerText =
+            "Camera Active";
+
+        status.className =
+            "camera-status";
+
+
+        updateAIStatus(
+            "AI Loading",
+            "Camera is working. Loading pose detection..."
+        );
+
+
+        loadMediaPipe();
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+        status.innerText =
+            "Camera Error";
+
+        status.className =
+            "camera-status error";
+
+        updateAIStatus(
+            "Camera Error",
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   MEDIAPIPE
+===================================================== */
+
+async function loadMediaPipe() {
+
+    if (poseLoading) return;
+
+    poseLoading = true;
+
+    try {
+
+        updateAIStatus(
+            "AI Loading",
+            "Connecting to MediaPipe..."
+        );
+
+
+        const vision =
+            await import(
+                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/vision_bundle.mjs"
+            );
+
+
+        const FilesetResolver =
+            vision.FilesetResolver;
+
+        const PoseLandmarker =
+            vision.PoseLandmarker;
+
+
+        const fileset =
+            await FilesetResolver
+            .forVisionTasks(
+                "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.35/wasm"
+            );
+
+
+        updateAIStatus(
+            "Loading Pose Model",
+            "Downloading pose detection model..."
+        );
+
+
+        const modelURL =
+            "https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task";
+
+
+        poseLandmarker =
+            await PoseLandmarker
+            .createFromOptions(
+                fileset,
+                {
+
+                    baseOptions: {
+
+                        modelAssetPath:
+                            modelURL,
+
+                        delegate:
+                            "CPU"
+
+                    },
+
+                    runningMode:
+                        "VIDEO",
+
+                    numPoses:
+                        1,
+
+                    minPoseDetectionConfidence:
+                        0.5,
+
+                    minPosePresenceConfidence:
+                        0.5,
+
+                    minTrackingConfidence:
+                        0.5
+
+                }
+            );
+
+
+        poseLoading = false;
+
+
+        updateAIStatus(
+            "AI Active",
+            "Pose detection is working. Sit in front of the camera."
+        );
+
+
+        document
+        .getElementById("cameraStatus")
+        .innerText =
+            "Camera + AI Active";
+
+
+        requestAnimationFrame(
+            detectPose
+        );
+
+    }
+
+    catch(error) {
+
+        console.error(error);
+
+        poseLoading = false;
+
+        updateAIStatus(
+            "AI Could Not Load",
+            "Please refresh and check your internet connection."
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   AI STATUS
+===================================================== */
+
+function updateAIStatus(title, message) {
+
+    const box =
+        document.getElementById("aiStatus");
+
+    box.innerHTML =
+        `<h2>${title}</h2>
+         <p>${message}</p>`;
+
+}
+
+
+/* =====================================================
+   POSE LOOP
+===================================================== */
+
+function detectPose() {
+
+    if (
+        !poseLandmarker ||
+        video.readyState < 2
+    ) {
+
+        requestAnimationFrame(
+            detectPose
+        );
+
+        return;
+
+    }
+
+
+    if (
+        video.currentTime !==
+        lastVideoTime
+    ) {
+
+        lastVideoTime =
+            video.currentTime;
+
+
+        canvas.width =
+            video.videoWidth;
+
+        canvas.height =
+            video.videoHeight;
+
+
+        try {
+
+            const result =
+                poseLandmarker
+                .detectForVideo(
+                    video,
+                    performance.now()
+                );
+
+
+            drawSkeleton(result);
+
+            analyzePose(result);
+
+        }
+
+        catch(error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    requestAnimationFrame(
+        detectPose
+    );
+
+}
+
+
+/* =====================================================
+   DRAW SKELETON
+===================================================== */
+
+function drawSkeleton(result) {
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    if (
+        !result.landmarks ||
+        result.landmarks.length === 0
+    ) return;
+
+
+    const p =
+        result.landmarks[0];
+
+
+    const connections = [
+
+        [11,12],
+        [11,13],
+        [13,15],
+        [12,14],
+        [14,16],
+        [11,23],
+        [12,24],
+        [23,24]
+
+    ];
+
+
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "#20b463";
+
+
+    connections.forEach(([a,b]) => {
+
+        if (!p[a] || !p[b]) return;
+
+        ctx.beginPath();
+
+        ctx.moveTo(
+            p[a].x * canvas.width,
+            p[a].y * canvas.height
+        );
+
+        ctx.lineTo(
+            p[b].x * canvas.width,
+            p[b].y * canvas.height
+        );
+
+        ctx.stroke();
+
+    });
+
+
+    ctx.fillStyle = "#ffffff";
+    ctx.strokeStyle = "#159447";
+    ctx.lineWidth = 3;
+
+
+    [0,11,12,13,14,15,16,23,24]
+    .forEach(index => {
+
+        if (!p[index]) return;
+
+        const x =
+            p[index].x * canvas.width;
+
+        const y =
+            p[index].y * canvas.height;
+
+        ctx.beginPath();
+
+        ctx.arc(
+            x,
+            y,
+            7,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fill();
+        ctx.stroke();
+
+    });
+
+}
+
+
+/* =====================================================
+   ANALYZE POSE
+===================================================== */
+
+function analyzePose(result) {
+
+    if (
+        !result.landmarks ||
+        result.landmarks.length === 0
+    ) {
+
+        document
+        .getElementById("postureText")
+        .innerText =
+            "Person not detected";
+
+        return;
+
+    }
+
+
+    const p =
+        result.landmarks[0];
+
+
+    const ls = p[11];
+    const rs = p[12];
+    const lh = p[23];
+    const rh = p[24];
+
+
+    if (!ls || !rs || !lh || !rh)
+        return;
+
+
+    const shoulderAngle =
+        Math.abs(
+            Math.atan2(
+                rs.y - ls.y,
+                rs.x - ls.x
+            ) * 180 / Math.PI
+        );
+
+
+    const shoulderX =
+        (ls.x + rs.x) / 2;
+
+    const shoulderY =
+        (ls.y + rs.y) / 2;
+
+    const hipX =
+        (lh.x + rh.x) / 2;
+
+    const hipY =
+        (lh.y + rh.y) / 2;
+
+
+    const torsoAngle =
+        Math.abs(
+            Math.atan2(
+                hipX - shoulderX,
+                hipY - shoulderY
+            ) * 180 / Math.PI
+        );
+
+
+    let score = 100;
+
+    score -= Math.min(
+        shoulderAngle * 2,
+        25
+    );
+
+    score -= Math.min(
+        torsoAngle * 2,
+        45
+    );
+
+
+    score =
+        Math.round(
+            Math.max(
+                0,
+                Math.min(100, score)
+            )
+        );
+
+
+    updatePosture(score);
+
+
+    const current = {
+        x: shoulderX,
+        y: shoulderY
+    };
+
+
+    if (previousShoulder) {
+
+        const movement =
+            Math.sqrt(
+                Math.pow(
+                    current.x -
+                    previousShoulder.x,
+                    2
+                )
+                +
+                Math.pow(
+                    current.y -
+                    previousShoulder.y,
+                    2
+                )
+            );
+
+        updateMovement(movement);
+
+    }
+
+
+    previousShoulder =
+        current;
+
+
+    /*
+      12/min is currently a prototype
+      placeholder, not real breathing detection.
+    */
+
+    document
+    .getElementById("breathingRate")
+    .innerText =
+        "12 / min";
+
+}
+
+
+/* =====================================================
+   POSTURE
+===================================================== */
+
+function updatePosture(score) {
+
+    const scoreElement =
+        document.getElementById("postureScore");
+
+    const textElement =
+        document.getElementById("postureText");
+
+    const bar =
+        document.getElementById("postureBar");
+
+
+    scoreElement.innerText =
+        score;
+
+    bar.style.width =
+        score + "%";
+
+
+    let posture;
+    let stress;
+
+
+    if (score >= 80) {
+
+        scoreElement.className =
+            "value good";
+
+        textElement.innerText =
+            "Good posture";
+
+        posture =
+            "Good posture";
+
+        stress =
+            "Low";
+
+
+        updateAlert(
+            "Good Posture",
+            "Your body alignment looks good.",
+            "good"
+        );
+
+    }
+
+    else if (score >= 60) {
+
+        scoreElement.className =
+            "value warning";
+
+        textElement.innerText =
+            "Needs attention";
+
+        posture =
+            "Needs attention";
+
+        stress =
+            "Medium";
+
+
+        updateAlert(
+            "Adjust Your Posture",
+            "Relax your shoulders and sit upright.",
+            "warning"
+        );
+
+    }
+
+    else {
+
+        scoreElement.className =
+            "value danger";
+
+        textElement.innerText =
+            "Poor posture";
+
+        posture =
+            "Poor posture";
+
+        stress =
+            "High";
+
+
+        updateAlert(
+            "Straighten Up",
+            "You appear to be leaning or slouching.",
+            "danger"
+        );
+
+    }
+
+
+    const stressElement =
+        document.getElementById("stressLevel");
+
+    stressElement.innerText =
+        stress;
+
+
+    stressElement.className =
+        stress === "Low"
+        ? "value good"
+        : stress === "Medium"
+        ? "value warning"
+        : "value danger";
+
+
+    /*
+      Update Live Monitor
+    */
+
+    document
+    .getElementById("monitorPosture")
+    .innerText =
+        posture;
+
+    document
+    .getElementById("monitorStress")
+    .innerText =
+        stress;
+
+
+    /*
+      Update History
+    */
+
+    document
+    .getElementById("historyScore")
+    .innerText =
+        score;
+
+    document
+    .getElementById("historyStress")
+    .innerText =
+        stress;
+
+
+    updateImprovements(score);
+
+}
+
+
+/* =====================================================
+   MOVEMENT
+===================================================== */
+
+function updateMovement(value) {
+
+    const element =
+        document.getElementById("movementLevel");
+
+    let movement;
+
+
+    if (value > 0.025) {
+
+        movement = "High";
+
+        element.className =
+            "value good";
+
+    }
+
+    else if (value > 0.008) {
+
+        movement = "Normal";
+
+        element.className =
+            "value good";
+
+    }
+
+    else {
+
+        movement = "Low";
+
+        element.className =
+            "value warning";
+
+    }
+
+
+    element.innerText =
+        movement;
+
+
+    document
+    .getElementById("monitorMovement")
+    .innerText =
+        movement;
+
+    document
+    .getElementById("historyMovement")
+    .innerText =
+        movement;
+
+}
+
+
+/* =====================================================
+   ALERT
+===================================================== */
+
+function updateAlert(
+    title,
+    message,
+    type
+) {
+
+    document
+    .getElementById("alertTitle")
+    .innerText =
+        title;
+
+    document
+    .getElementById("alertMessage")
+    .innerText =
+        message;
+
+
+    const box =
+        document.getElementById("mainAlert");
+
+
+    box.className =
+        "alert";
+
+
+    if (type === "warning")
+        box.classList.add("warning-box");
+
+    if (type === "danger")
+        box.classList.add("danger-box");
+
+
+    document
+    .getElementById("monitorAlert")
+    .innerText =
+        title;
+
+}
+
+
+/* =====================================================
+   IMPROVEMENTS
+===================================================== */
+
+function updateImprovements(score) {
+
+    const list =
+        document.getElementById(
+            "improvementList"
+        );
+
+
+    let items = [];
+
+
+    if (score < 80)
+        items.push(
+            "Maintain a more upright sitting posture"
+        );
+
+    if (score < 70)
+        items.push(
+            "Reduce forward leaning or slouching"
+        );
+
+    items.push(
+        "Relax your shoulders"
+    );
+
+    items.push(
+        "Take regular movement breaks"
+    );
+
+
+    list.innerHTML =
+        items
+        .map(item => `<li>${item}</li>`)
+        .join("");
+
+}
+
+
+/* =====================================================
+   FLIP CAMERA
+===================================================== */
+
+async function flipCamera() {
+
+    frontCamera =
+        !frontCamera;
+
+    await startCamera();
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showSection(id, element) {
+
+    document
+    .querySelectorAll(".section")
+    .forEach(section => {
+
+        section.classList
+        .remove("active");
+
+    });
+
+
+    document
+    .getElementById(id)
+    .classList
+    .add("active");
+
+
+    document
+    .querySelectorAll(".nav")
+    .forEach(nav => {
+
+        nav.classList
+        .remove("active");
+
+    });
+
+
+    element.classList.add("active");
+
+}
+
+
+/* =====================================================
+   BREATHING EXERCISE
+===================================================== */
+
+let breathingInterval = null;
+let breathingTimeout = null;
+let breathingRunning = false;
+
+let breathingRemaining = 60;
+
+
+/*
+   1-minute exercise
+
+   Inhale = 4 sec
+   Hold   = 4 sec
+   Exhale = 4 sec
+
+   Total = 12 sec per cycle
+   Approximately 5 cycles/minute
+*/
+
+
+function startBreathing() {
+
+    if (breathingRunning)
+        return;
+
+
+    breathingRunning = true;
+
+    breathingRemaining = 60;
+
+
+    document
+    .getElementById("breathingStart")
+    .innerText =
+        "Exercise Running...";
+
+
+    updateTimer();
+
+
+    breathingInterval =
+        setInterval(() => {
+
+            breathingRemaining--;
+
+            updateTimer();
+
+
+            if (
+                breathingRemaining <= 0
+            ) {
+
+                finishBreathing();
+
+            }
+
+        }, 1000);
+
+
+    runBreathingCycle();
+
+}
+
+
+function runBreathingCycle() {
+
+    if (!breathingRunning)
+        return;
+
+
+    const elapsed =
+        60 - breathingRemaining;
+
+
+    const phase =
+        elapsed % 12;
+
+
+    const circle =
+        document.getElementById(
+            "breathCircle"
+        );
+
+    const text =
+        document.getElementById(
+            "breathText"
+        );
+
+
+    if (phase < 4) {
+
+        /*
+          INHALE
+        */
+
+        circle.classList.add(
+            "expand"
+        );
+
+        text.innerText =
+            "Inhale\n4 sec";
+
+
+    }
+
+    else if (phase < 8) {
+
+        /*
+          HOLD
+        */
+
+        text.innerText =
+            "Hold\n4 sec";
+
+
+    }
+
+    else {
+
+        /*
+          EXHALE
+        */
+
+        circle.classList.remove(
+            "expand"
+        );
+
+        text.innerText =
+            "Exhale\n4 sec";
+
+    }
+
+
+    breathingTimeout =
+        setTimeout(
+            runBreathingCycle,
+            1000
+        );
+
+}
+
+
+/* =====================================================
+   BREATHING TIMER
+===================================================== */
+
+function updateTimer() {
+
+    const minutes =
+        Math.floor(
+            breathingRemaining / 60
+        );
+
+    const seconds =
+        breathingRemaining % 60;
+
+
+    document
+    .getElementById("timer")
+    .innerText =
+
+        String(minutes)
+        .padStart(2,"0")
+
+        +
+
+        ":" +
+
+        String(seconds)
+        .padStart(2,"0");
+
+}
+
+
+/* =====================================================
+   STOP BREATHING
+===================================================== */
+
+function stopBreathing() {
+
+    breathingRunning = false;
+
+
+    clearInterval(
+        breathingInterval
+    );
+
+    clearTimeout(
+        breathingTimeout
+    );
+
+
+    breathingInterval = null;
+    breathingTimeout = null;
+
+
+    document
+    .getElementById("breathCircle")
+    .classList
+    .remove("expand");
+
+
+    document
+    .getElementById("breathText")
+    .innerText =
+        "Ready";
+
+
+    breathingRemaining = 60;
+
+    updateTimer();
+
+
+    document
+    .getElementById("breathingStart")
+    .innerText =
+        "Start 1-Minute Exercise";
+
+}
+
+
+/* =====================================================
+   FINISH BREATHING
+===================================================== */
+
+function finishBreathing() {
+
+    breathingRunning = false;
+
+
+    clearInterval(
+        breathingInterval
+    );
+
+    clearTimeout(
+        breathingTimeout
+    );
+
+
+    document
+    .getElementById("breathCircle")
+    .classList
+    .remove("expand");
+
+
+    document
+    .getElementById("breathText")
+    .innerText =
+        "Complete";
+
+
+    document
+    .getElementById("timer")
+    .innerText =
+        "00:00";
+
+
+    document
+    .getElementById("breathingStart")
+    .innerText =
+        "Start Again";
+
+}
+
+
+/* =====================================================
+   INITIAL ICON LOAD
+===================================================== */
+
+lucide.createIcons();
+
+</script>
+
+</body>
+</html>
