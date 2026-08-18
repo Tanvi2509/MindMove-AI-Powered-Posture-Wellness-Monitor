@@ -28,7 +28,7 @@ AI-powered real-time posture, movement, and wellness monitoring prototype using 
 Open terminal in the project folder and run:
 
 ```bash
-python -m http.server 8000
+py -m http.server 8000
 ```
 ### 2. Create a public HTTPS link
 
@@ -44,6 +44,5 @@ https://example.ngrok-free.dev/main.html
 ```
 on a phone to test the prototype.
 
-Important
-
+Important:
 Keep both the Python server and ngrok running while using the public link.
