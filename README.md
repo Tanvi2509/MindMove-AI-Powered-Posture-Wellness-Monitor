@@ -25,7 +25,7 @@ AI-powered real-time posture, movement, and wellness monitoring prototype using 
 
 ### 1. Start the local server
 
-Open Command Prompt in the project folder and run:
+Open terminal in the project folder and run:
 
 ```bash
 python -m http.server 8000
@@ -35,13 +35,13 @@ python -m http.server 8000
 Open another Command Prompt and run:
 ```bash
 ngrok http 8000
-
-ngrok will display a forwarding URL such as:
+```
+ngrok will display a forwarding URL:
 
 Open:
 ```bash
 https://example.ngrok-free.dev/main.html
-
+```
 on a phone to test the prototype.
 
 Important
